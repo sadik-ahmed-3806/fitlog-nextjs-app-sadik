@@ -5,15 +5,15 @@ import bannerImage from "./assets/banner.png";
 export default function Hero() {
   return (
     <section id="library" className="mx-auto max-w-7xl px-6 pt-10">
-      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#111111] px-8 py-14 sm:px-14">
-        <div className="grid items-center gap-10 lg:grid-cols-2">
+      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#111111] px-6 py-10 sm:px-8 sm:py-12">
+        <div className="grid items-center gap-6 md:grid-cols-2 lg:gap-10">
           {/* Copy */}
           <div>
             <p className="text-sm font-bold tracking-[0.2em] text-[#ccff00]">
               WORKOUT LIBRARY
             </p>
 
-            <h1 className="mt-4 font-sans text-5xl font-bold uppercase leading-[1.05] text-white sm:text-6xl">
+            <h1 className="mt-4 font-sans text-3xl font-bold uppercase leading-[1.05] text-white sm:text-4xl">
               Train with intent.
               <br />
               Log every set.
@@ -35,7 +35,7 @@ export default function Hero() {
           </div>
 
           {/* Banner image */}
-          <div className="relative mx-auto hidden aspect-square w-full max-w-md lg:block">
+          <div className="relative mx-auto hidden aspect-square w-full max-w-xs md:block lg:max-w-md">
             <Image
               src={bannerImage}
               alt="Anatomical illustration of an athlete on an exercise bike"

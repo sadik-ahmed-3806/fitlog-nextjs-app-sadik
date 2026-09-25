@@ -1,7 +1,0 @@
-echo "# fitlog-nextjs-app-sadik" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/sadik-ahmed-3806/fitlog-nextjs-app-sadik.git
-git push -u origin main
