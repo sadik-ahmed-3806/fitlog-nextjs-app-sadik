@@ -50,16 +50,31 @@ function readIds(key: string): string[] {
 }
 
 export function PlanProvider({ children }: { children: ReactNode }) {
-  const [planIds, setPlanIds] = useState<string[]>(() => readIds(PLAN_KEY));
-  const [savedIds, setSavedIds] = useState<string[]>(() => readIds(SAVED_KEY));
+  const [planIds, setPlanIds] = useState<string[]>([]);
+  const [savedIds, setSavedIds] = useState<string[]>([]);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    window.localStorage.setItem(PLAN_KEY, JSON.stringify(planIds));
-  }, [planIds]);
+    const timer = window.setTimeout(() => {
+      setPlanIds(readIds(PLAN_KEY));
+      setSavedIds(readIds(SAVED_KEY));
+      setHydrated(true);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
-    window.localStorage.setItem(SAVED_KEY, JSON.stringify(savedIds));
-  }, [savedIds]);
+    if (hydrated) {
+      window.localStorage.setItem(PLAN_KEY, JSON.stringify(planIds));
+    }
+  }, [hydrated, planIds]);
+
+  useEffect(() => {
+    if (hydrated) {
+      window.localStorage.setItem(SAVED_KEY, JSON.stringify(savedIds));
+    }
+  }, [hydrated, savedIds]);
 
   const toggleInPlan = useCallback((id: string) => {
     setPlanIds((prev) =>
