@@ -15,8 +15,11 @@ export default function WorkoutActions({ workoutId }: { workoutId: number }) {
 
   function addToPlan() {
     if (!isInPlan(String(workoutId))) {
-      toggleInPlan(String(workoutId));
-      showToast("Added to today's plan");
+      if (toggleInPlan(String(workoutId))) {
+        showToast("Added to today's plan");
+      } else {
+        showToast("Today's plan is full. Remove a lift to add another.");
+      }
     } else {
       showToast("Already in today's plan");
     }

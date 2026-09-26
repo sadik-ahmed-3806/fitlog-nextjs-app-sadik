@@ -25,6 +25,7 @@ import {
 
 const PLAN_KEY = "fitlog:plan";
 const SAVED_KEY = "fitlog:saved";
+const MAX_PLAN_ITEMS = 5;
 
 type PlanContextValue = {
   planIds: string[];
@@ -33,7 +34,7 @@ type PlanContextValue = {
   savedCount: number;
   isInPlan: (id: string) => boolean;
   isSaved: (id: string) => boolean;
-  toggleInPlan: (id: string) => void;
+  toggleInPlan: (id: string) => boolean;
   toggleSaved: (id: string) => void;
 };
 
@@ -56,7 +57,7 @@ export function PlanProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      setPlanIds(readIds(PLAN_KEY));
+      setPlanIds(readIds(PLAN_KEY).slice(0, MAX_PLAN_ITEMS));
       setSavedIds(readIds(SAVED_KEY));
       setHydrated(true);
     }, 0);
@@ -77,10 +78,14 @@ export function PlanProvider({ children }: { children: ReactNode }) {
   }, [hydrated, savedIds]);
 
   const toggleInPlan = useCallback((id: string) => {
-    setPlanIds((prev) =>
-      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
-    );
-  }, []);
+    if (planIds.includes(id)) {
+      setPlanIds((prev) => prev.filter((planId) => planId !== id));
+      return true;
+    }
+    if (planIds.length >= MAX_PLAN_ITEMS) return false;
+    setPlanIds((prev) => [...prev, id]);
+    return true;
+  }, [planIds]);
 
   const toggleSaved = useCallback((id: string) => {
     setSavedIds((prev) =>

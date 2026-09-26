@@ -11,6 +11,7 @@ export default function MyPlan() {
   const { planIds, savedIds, toggleInPlan, toggleSaved } = usePlanStore();
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [tab, setTab] = useState<"plan" | "saved">("plan");
+  const [completedIds, setCompletedIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
 
@@ -44,8 +45,14 @@ export default function MyPlan() {
       .filter((workout): workout is Workout => Boolean(workout)),
     [ids, workouts],
   );
+  const planned = useMemo(
+    () => planIds
+      .map((id) => workouts.find((workout) => String(workout.id) === id))
+      .filter((workout): workout is Workout => Boolean(workout)),
+    [planIds, workouts],
+  );
   const metrics = useMemo(
-    () => selected.reduce(
+    () => planned.reduce(
       (totals, workout) => ({
         exercises: totals.exercises + 1,
         minutes: totals.minutes + workout.duration,
@@ -53,14 +60,13 @@ export default function MyPlan() {
       }),
       { exercises: 0, minutes: 0, calories: 0 },
     ),
-    [selected],
+    [planned],
   );
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8 lg:py-16">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-5 py-12 sm:px-8 lg:py-16">
       <header className="max-w-2xl">
-        <p className="text-xs font-bold tracking-[0.28em] text-[#ccff00]">YOUR WORKOUTS</p>
-        <h1 className="mt-3 text-4xl font-extrabold uppercase tracking-tight sm:text-5xl">My Plan</h1>
+        <h1 className="text-4xl font-extrabold uppercase tracking-tight sm:text-5xl">MY PLAN</h1>
         <p className="mt-4 text-base text-gray-400">Cap of five lifts for today. Finish them, then load more.</p>
       </header>
 
@@ -77,7 +83,7 @@ export default function MyPlan() {
         ))}
       </section>
 
-      <div className="mt-12 flex gap-7 border-b border-white/10">
+      <div role="tablist" aria-label="Workout lists" className="mt-12 flex gap-7 border-b border-white/10">
         {([
           ["plan", "Today's Plan", planIds.length],
           ["saved", "Saved", savedIds.length],
@@ -86,6 +92,8 @@ export default function MyPlan() {
             <button
               key={value}
               type="button"
+              role="tab"
+              aria-selected={tab === value}
               onClick={() => setTab(value)}
               className={`border-b-2 pb-4 text-sm font-bold transition-colors ${
                 tab === value
@@ -104,7 +112,7 @@ export default function MyPlan() {
         <p role="alert" className="py-16 text-center text-sm text-red-300">{loadError}</p>
       ) : selected.length === 0 ? (
         <div className="py-20 text-center">
-          <Bookmark className="mx-auto h-9 w-9 text-[#ccff00]" />
+          <Bookmark aria-hidden="true" className="mx-auto h-9 w-9 text-[#ccff00]" />
           <h2 className="mt-5 text-xl font-extrabold uppercase">Nothing here yet</h2>
           <p className="mx-auto mt-3 max-w-md text-sm text-gray-500">
             Browse the library and add a lift to get today moving.
@@ -135,11 +143,30 @@ export default function MyPlan() {
                   View Details
                 </Link>
                 {tab === "plan" && (
-                  <button type="button" onClick={() => toggleInPlan(String(workout.id))} className="inline-flex items-center gap-1.5 rounded-lg border border-[#ccff00]/50 px-3 py-2 text-xs font-bold text-[#ccff00] transition-colors hover:bg-[#ccff00] hover:text-black">
-                    <Check className="h-3.5 w-3.5" /> Mark as Done
+                  <button
+                    type="button"
+                    disabled={completedIds.includes(String(workout.id))}
+                    onClick={() => setCompletedIds((ids) => [...ids, String(workout.id)])}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-[#ccff00]/50 px-3 py-2 text-xs font-bold text-[#ccff00] transition-colors hover:bg-[#ccff00] hover:text-black disabled:cursor-default disabled:bg-[#ccff00] disabled:text-black"
+                  >
+                    <Check className="h-3.5 w-3.5" />
+                    {completedIds.includes(String(workout.id)) ? "Done" : "Mark as Done"}
                   </button>
                 )}
-                <button type="button" aria-label={`Remove ${workout.name}`} onClick={() => (tab === "plan" ? toggleInPlan(String(workout.id)) : toggleSaved(String(workout.id)))} className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-white/10 hover:text-white">
+                <button
+                  type="button"
+                  aria-label={`Remove ${workout.name}`}
+                  onClick={() => {
+                    const id = String(workout.id);
+                    if (tab === "plan") {
+                      toggleInPlan(id);
+                      setCompletedIds((ids) => ids.filter((completedId) => completedId !== id));
+                    } else {
+                      toggleSaved(id);
+                    }
+                  }}
+                  className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-white/10 hover:text-white"
+                >
                   <X className="h-4 w-4" />
                 </button>
               </div>

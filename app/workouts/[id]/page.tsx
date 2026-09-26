@@ -11,9 +11,9 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
 
   if (!workout) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] text-white">
+      <div className="flex flex-1 flex-col bg-[#0a0a0a] text-white">
         <Navbar />
-        <main className="mx-auto max-w-3xl px-6 py-24 text-center">
+        <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-24 text-center">
           <h1 className="text-3xl font-bold">Workout not found</h1>
           <Link href="/" className="mt-6 inline-flex text-[#ccff00] hover:underline">Back to library</Link>
         </main>
@@ -22,9 +22,9 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="flex flex-1 flex-col bg-[#0a0a0a] text-white">
       <Navbar />
-      <main className="mx-auto max-w-7xl px-6 py-10">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-10">
         <Link href="/" className="mb-8 inline-flex items-center gap-2 text-sm text-gray-400 hover:text-[#ccff00]">
           <ArrowLeft className="h-4 w-4" /> Back to library
         </Link>

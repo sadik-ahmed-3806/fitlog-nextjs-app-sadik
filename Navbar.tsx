@@ -16,7 +16,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0a0a0a]/95 backdrop-blur">
-      <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-6">
+      <div className="relative mx-auto flex min-h-[68px] max-w-7xl flex-wrap items-center justify-between gap-y-3 px-4 py-3 sm:h-[68px] sm:flex-nowrap sm:px-6 sm:py-0">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <Dumbbell className="h-5 w-5 text-[#ccff00]" strokeWidth={2.5} />
@@ -26,7 +26,7 @@ export default function Navbar() {
         </Link>
 
         {/* Center nav links */}
-        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 sm:flex">
+        <nav aria-label="Main navigation" className="order-3 flex basis-full justify-center gap-1 sm:order-none sm:absolute sm:left-1/2 sm:-translate-x-1/2">
           {NAV_LINKS.map((link) => {
             const isActive =
               link.href === "/"

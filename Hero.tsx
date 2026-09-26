@@ -35,7 +35,7 @@ export default function Hero() {
           </div>
 
           {/* Banner image */}
-          <div className="relative mx-auto hidden aspect-square w-full max-w-xs md:block lg:max-w-md">
+          <div className="relative mx-auto aspect-square w-full max-w-[180px] sm:max-w-xs md:max-w-none lg:max-w-md">
             <Image
               src={bannerImage}
               alt="Anatomical illustration of an athlete on an exercise bike"
